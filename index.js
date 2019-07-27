@@ -1,12 +1,23 @@
-const OSinfo = require("./module/OSinfo");
+const OSinfo = require("./module/OSinfo"),
+  EventEmitter = require("events").EventEmitter,
+  emitter = new EventEmitter();
+
+emitter.on("beforeCommand", function(instruction) {
+  console.log("You wrote: " + instruction + " trying to run command.");
+});
+emitter.on("afterCommand", function() {
+  console.log("Finished command");
+});
 
 process.stdin.setEncoding("utf-8");
 
 process.stdin.on("readable", function() {
   // metoda .read() ma za zadanie odczytać co użytkownik podał na wejściu
-  var input = process.stdin.read();
+  let input = process.stdin.read();
   if (input !== null) {
-    var instruction = input.toString().trim();
+    let instruction = input.toString().trim();
+
+    emitter.emit("beforeCommand", instruction);
     switch (instruction) {
       case "/version":
         process.stdout.write(
@@ -28,5 +39,6 @@ process.stdin.on("readable", function() {
       default:
         process.stderr.write("Wrong instruction!\n");
     }
+    emitter.emit("afterCommand");
   }
 });
