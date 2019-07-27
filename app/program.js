@@ -1,3 +1,5 @@
+var OSinfo = require("../module/OSinfo");
+
 process.stdin.setEncoding("utf-8");
 
 process.stdin.on("readable", function() {
@@ -15,6 +17,9 @@ process.stdin.on("readable", function() {
             "\n"
         );
         process.exit();
+        break;
+      case "/getOSinfo":
+        OSinfo.print();
         break;
       case "/exit":
         process.stdout.write("Quitting app!\n");
